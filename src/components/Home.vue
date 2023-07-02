@@ -5,6 +5,7 @@
     <hr>
     <button @click="gotoLK">通过push跳转到“逻辑”页面</button>
     <button @click="gotoLK2">通过replace跳转到“洛基”页面</button>
+    <router-link to="/main">访问后台主页</router-link>
   </div>
 </template>
 

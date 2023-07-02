@@ -10,6 +10,8 @@ import Movie from '../components/Movie.vue'
 import About from '../components/About.vue'
 import Tab1 from '../components/tabs/Tab1.vue'
 import Tab2 from '../components/tabs/Tab2.vue'
+import Login from '../components/Login.vue'
+import Main from '../components/Main.vue'
 
 // 2. 调用Vue.use()函数， 把VueRouter 安装为Vue的插件
 // Vue.use()函数的作用，就是用来安装插件的
@@ -36,7 +38,9 @@ const router = new VueRouter({
         { path: '', component: Tab1 },
         { path: 'tab2', component: Tab2 }
       ]
-    }
+    },
+    { path: '/login', component: Login },
+    { path: '/Main', component: Main }
   ]
 })
 
@@ -48,7 +52,27 @@ router.beforeEach(function (to, from, next) {
   // from表示将要离开的信息对象
 
   // next函数表示放行的意思
-  next()
+  // next()
+  // 分析：
+  // 1.要拿到用户将要访问的hash地址
+  // 2. 判断hash地址是否等于/main
+  // 2.1 如果等于main，证明需要登录成功之后，才能访问成功
+  // 2.2 如果不等于/Main, 则不需要登录， 直接放行 next()
+  // 3. 如果访问的地址是/main。则需要读取localStorage 重的token值
+  // 3.1 如果有token则放行
+  // 3.2 如果没有token，则强制跳转到/Login 登录页
+  if (to.path === '/main') {
+  // 要访问后台主页，需要判断是否有token
+    const token = localStorage.getItem('token')
+    if (token) {
+      next()
+    } else {
+      // 没有登录强制跳转到登录页
+      next('/login')
+    }
+  } else {
+    next()
+  }
 })
 
 // 4. 向外共享路由的实例对象
